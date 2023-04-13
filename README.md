@@ -4,6 +4,8 @@
 - [Download on Google](https://drive.google.com/drive/folders/1j8hhNF05KY_pq8C62uStkgkvpT7NsWDs?usp=sharing "Link on Google")
 ## Supported emulators
 - Mednafen [1.29.0](https://mednafen.github.io/releases "Download")
+- BizHawk [2.6.3](https://tasvideos.org/Bizhawk/ReleaseHistory#Bizhawk263 "Download") [2.9](https://tasvideos.org/Bizhawk/ReleaseHistory#Bizhawk29)
+- DuckStation [any](https://github.com/stenzek/duckstation/releases)
 ## Installation
 0. [Picture](https://github.com/PakLomak/Sega_Genesis_Autosplits/blob/main/How%20add%20asl.jpg)
 1. Скачайте .asl файл
