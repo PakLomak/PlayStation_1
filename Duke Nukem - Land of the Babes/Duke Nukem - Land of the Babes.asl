@@ -1,5 +1,6 @@
 state ("mednafen", "1.29.0") { }
 state ("EmuHawk", "2.6.3") { }
+state ("EmuHawk", "2.9") { }
 state ("ePSXe", "2.0.0") { }
 state ("duckstation-qt-x64-ReleaseLTCG", "any") { }
 state ("duckstation-nogui-x64-ReleaseLTCG", "any") { }
@@ -7,7 +8,7 @@ startup
 {
     settings.Add("main", false, "AutoSplitter for Duke Nukem - Land of the Babes by PakLomak");
 	settings.Add("main3", false, "--https://www.twitch.tv/paklomak", "main");
-        // Duckstation Vars
+    // Duckstation Vars
     vars.duckstationProcessNames = new List<string> {
         "duckstation-qt-x64-ReleaseLTCG",
         "duckstation-nogui-x64-ReleaseLTCG",
@@ -30,6 +31,10 @@ init
     case 0x45a000:
         version = "2.6.3";
         vars.baseRAMAddress = modules.Where(x => x.ModuleName == "octoshock.dll").First().BaseAddress + 0x30df80;
+        break;
+    case 0x482000: //4726784
+        version = "2.9";
+        vars.baseRAMAddress = modules.Where(x => x.ModuleName == "octoshock.dll").First().BaseAddress + 0x317F80;
         break;
     //epsxe
     case 0x1359000:
@@ -100,19 +105,22 @@ update
     vars.igtAddress = vars.baseRAMAddress + 0x0EA164;
     vars.countlvlAddress = vars.baseRAMAddress + 0x1FFF92;
     vars.pauseAddress = vars.baseRAMAddress + 0x070070;
+    vars.completelvlAddres = vars.baseRAMAddress + 0x06FF00;
 
     // Read memory
-    current.igt = memory.ReadValue<uint>((IntPtr)vars.igtAddress);
-    current.countlvl = memory.ReadValue<uint>((IntPtr)vars.countlvlAddress);
-    current.pause = memory.ReadValue<uint>((IntPtr)vars.pauseAddress);
+    current.igt = memory.ReadValue<ushort>((IntPtr)vars.igtAddress);
+    current.countlvl = memory.ReadValue<ushort>((IntPtr)vars.countlvlAddress);
+    current.pause = memory.ReadValue<ushort>((IntPtr)vars.pauseAddress);
+    current.completelvl = memory.ReadValue<ushort>((IntPtr)vars.completelvlAddres);
 }
 start
 {
-    return (old.igt == 0 && current.igt != 0 && current.countlvl == 0x01);
+    return (old.igt == 0 && current.igt != 0 && current.countlvl == 1);
 }
 split
 {
     if (current.countlvl != 0 && current.countlvl == old.countlvl + 1)   {return true;}
+    if (current.countlvl == 14 && old.completelvl != 0x3A74 && current.completelvl == 0x3A74)  {return true;}
 }
 isLoading
 {
